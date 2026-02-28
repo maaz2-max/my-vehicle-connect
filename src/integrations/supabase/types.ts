@@ -14,7 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      toggle_settings: {
+        Row: {
+          id: string
+          location_visible: boolean
+          phone_visible: boolean
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          location_visible?: boolean
+          phone_visible?: boolean
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          location_visible?: boolean
+          phone_visible?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
