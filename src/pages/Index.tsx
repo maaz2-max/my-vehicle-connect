@@ -70,13 +70,17 @@ const Index = () => {
       </div>
 
       {/* Footer */}
-      <div className="pt-2 text-center">
+      <div className="pt-2 border-t border-border space-y-3">
         <UserPanel
           phoneVisible={phoneVisible}
           locationVisible={locationVisible}
           onTogglePhone={(v) => updateToggle("phone_visible", v)}
           onToggleLocation={(v) => updateToggle("location_visible", v)}
         />
+        <div className="flex items-center justify-center gap-1.5 pt-1">
+          <img src={logo} alt="REACH.MME Logo" className="h-4 w-auto" />
+          <span className="text-[10px] text-muted-foreground">@ Registered 2026 reach.mme</span>
+        </div>
       </div>
     </div>
   );

@@ -121,10 +121,17 @@ const ContactDetails = ({ phoneVisible, locationVisible }: ContactDetailsProps) 
           </>
         )}
         {locationVisible && (
-          <div className="flex items-start gap-2.5 text-foreground">
-            <MapPin className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+          <button
+            onClick={() => {
+              const lat = "13.0827";
+              const lng = "77.6112";
+              window.open(`https://maps.google.com/?q=${lat},${lng}`, "_blank");
+            }}
+            className="w-full text-left flex items-start gap-2.5 text-primary hover:opacity-80 transition-opacity"
+          >
+            <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
             <span className="text-sm">Amar Layout, Bangalore, Karnataka, 560045</span>
-          </div>
+          </button>
         )}
       </div>
 
