@@ -9,23 +9,32 @@ import { supabase } from "@/integrations/supabase/client";
 const Index = () => {
   const [phoneVisible, setPhoneVisible] = useState(false);
   const [locationVisible, setLocationVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch toggle state on load
   useEffect(() => {
     const fetchSettings = async () => {
-      const { data } = await supabase
-        .from("toggle_settings")
-        .select("phone_visible, location_visible")
-        .eq("id", "default")
-        .single();
-      if (data) {
-        setPhoneVisible(data.phone_visible);
-        setLocationVisible(data.location_visible);
+      try {
+        const { data, error } = await supabase
+          .from("toggle_settings")
+          .select("phone_visible, location_visible")
+          .eq("id", "default")
+          .single();
+
+        if (error) {
+          console.error("Error fetching settings:", error);
+        } else if (data) {
+          setPhoneVisible(data.phone_visible);
+          setLocationVisible(data.location_visible);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
+
     fetchSettings();
 
-    // Realtime subscription
     const channel = supabase
       .channel("toggle-changes")
       .on(
@@ -39,18 +48,36 @@ const Index = () => {
       )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const updateToggle = async (field: "phone_visible" | "location_visible", value: boolean) => {
     if (field === "phone_visible") setPhoneVisible(value);
     else setLocationVisible(value);
 
-    await supabase
-      .from("toggle_settings")
-      .update({ [field]: value, updated_at: new Date().toISOString() })
-      .eq("id", "default");
+    try {
+      const { error } = await supabase
+        .from("toggle_settings")
+        .update({ [field]: value, updated_at: new Date().toISOString() })
+        .eq("id", "default");
+
+      if (error) {
+        console.error("Error updating toggle:", error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="w-10 h-10 border-3 border-muted border-t-primary rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full flex flex-col px-4 py-3 max-w-md mx-auto">
